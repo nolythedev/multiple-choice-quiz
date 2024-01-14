@@ -12,6 +12,6 @@ export let questions = [
     {
       question: "How many sides does a circle have?",
       answers: [3, 6, 8],
-      correctAnswer: 0
+      correctAnswer: 2
     }
 ];

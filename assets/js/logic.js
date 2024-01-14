@@ -13,9 +13,7 @@ var questionTitle = document.querySelector('#question-title');
 // Grab choices div
 var choices = document.querySelector('#choices');
 
-questions;
-
-console.log(questions);
+var index = 0;
 
 // Function for timer
 function timer() {
@@ -34,63 +32,74 @@ function timer() {
 }
 
 
-function getQuestions() {
-
-    // Create a ordered list 
-    var choicesList = document.createElement('ol');
-
-    // Style the ordered list 
-    choicesList.setAttribute('style', 'padding: 0;');
-    
-    // Iterate through questions array
-    for (var i = 0; i < questions.length; i++) {
-
-        // Set convineice variable question to question[i]
-        var question = questions[i];
-
-        // Set question title H2 to currently indexed question value
-        questionTitle.textContent = question.question;
-        
-        // Create an li element
-        var liElement = document.createElement('li');
-        
-        // Add li element to choices ol
-        choicesList.appendChild(liElement);
-        
-        // Style the li element
-        liElement.setAttribute('style', 'list-style-type: none;');
-        
-        // Create a button element 
-        var buttonElement = document.createElement('button');
-        
-        // Set the button text content to current indexed question then set the same index to answers to get current indexed questions answer
-        buttonElement.textContent = question.answers[i];
-        
-        // Add button element to list element
-        liElement.appendChild(buttonElement);
+function displayQuestion(index) {
+    // Check if index is within the array bounds
+    if (index < questions.length) {
+        var currentQuestion = questions[index];
+        // Set question title H2 to the current question value
+        questionTitle.textContent = currentQuestion.question;
     }
-    // Add newly created choices list to choices div
-    choices.appendChild(choicesList);
 }
+
+displayQuestion(index);
+
+
+// // Create a ordered list 
+
+
+// // Style the ordered list 
+// choicesList.setAttribute('style', 'padding: 0;');
+
+// for (var i = 0; i < questions.length; i++) {
+    
+//     var currentQuestion = questions[i];
+//     // Set question title H2 to currently indexed question value
+//     questionTitle.textContent = currentQuestion.question;
+    
+//     // Create an li element
+//     var liElement = document.createElement('li');
+    
+//     // Add li element to choices ol
+//     choicesList.appendChild(liElement);
+    
+
+    
+//     // Create a button element 
+//     var buttonElement = document.createElement('button');
+    
+//     // Set the button text content to the current indexed answer
+//     buttonElement.textContent = currentQuestion.answers[i];
+                   
+//     // Sets the value of the button to be the same as the textContent of the button
+//     buttonElement.value = i; // Use the index as the value
+    
+//     // Add button element to list element
+//     liElement.appendChild(buttonElement);
+    
+//     buttonElement.addEventListener('click', checkClick); 
+// }
+
+// // Add newly created choices list to choices div
+
+
 
 
 function startQuiz(event) {
+    event.preventDefault();
+    
     console.log('Start has been clicked and timer has started');
     timer();
-
+    
     // When start button is clicked start screen class is = to hide
     startScreen.className = 'start hide';
     // When start button is clicked #questions screen = show
     questionScreen.classList.remove('hide');
-
-    getQuestions();
-
+    
+    
 }
 
-startButton.addEventListener('click', startQuiz)
 
-
-// Set textContent of question-title to questions
+startButton.addEventListener('click', startQuiz);
 
 
 
