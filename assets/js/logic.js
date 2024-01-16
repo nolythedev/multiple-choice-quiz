@@ -8,6 +8,7 @@ var timerEl = document.querySelector('#time');
 var startScreen = document.querySelector('#start-screen');
 // Grabs questions div 
 var questionScreen = document.querySelector('#questions');
+var endScreen = document.querySelector('#end-screen');
 // Grabs question H2 
 var questionTitle = document.querySelector('#question-title');
 // Grab choices div
@@ -31,7 +32,6 @@ function timer() {
     }, 1000);
 }
 
-
 function displayQuestion(index) {
     // Check if index is within the array bounds
     if (index < questions.length) {
@@ -41,46 +41,80 @@ function displayQuestion(index) {
     }
 }
 
-displayQuestion(index);
+function displayAnswers() {
+
+    // Clear the existing choices
+    choices.innerHTML = "";
+
+        // Create an ordered list element
+        var choicesList = document.createElement('ol');
+
+        // Loop through the answers array of the current question
+        for (var i = 0; i < questions[index].answers.length; i++) {
+            // Create an li element for each answer
+            var liElement = document.createElement('li');
+
+        // Style the li element
+        liElement.setAttribute('style', 'list-style-type: none;');
+
+            // Create a button element
+            var buttonElement = document.createElement('button');
+
+            // Set the button text content to the current indexed answer
+            buttonElement.textContent = questions[index].answers[i];
+
+            // Set the value of the button to be the same as the index of the answer
+            buttonElement.value = i;
+
+             // Add an event listener to the button to check the answer when clicked
+             buttonElement.addEventListener('click', function(event) {
+                checkAnswer(event, index);
+            });
+
+            // Add button element to list element
+            liElement.appendChild(buttonElement);
+
+            // Add li element to choices ol
+            choicesList.appendChild(liElement);
+        }
+
+        // Append the choicesList to the choices container
+        choices.appendChild(choicesList);
+}
+
+displayAnswers();
+
+function navigate(direction) {
+    index = index + direction;
+    if (index < 0) { 
+        index = questions.length - 1; 
+    } else if (index > questions.length - 1) { 
+        questionScreen.className = 'hide';
+        endScreen.classList.remove('hide');
+    }
+
+    displayQuestion(index);
+    displayAnswers();
+}
 
 
-// // Create a ordered list 
+function checkAnswer(event, index) {
+    event.preventDefault();
+    
+    var selectedAnswer = event.target.value;
+    var correctAnswer = questions[index].correctAnswer;
 
-
-// // Style the ordered list 
-// choicesList.setAttribute('style', 'padding: 0;');
-
-// for (var i = 0; i < questions.length; i++) {
-    
-//     var currentQuestion = questions[i];
-//     // Set question title H2 to currently indexed question value
-//     questionTitle.textContent = currentQuestion.question;
-    
-//     // Create an li element
-//     var liElement = document.createElement('li');
-    
-//     // Add li element to choices ol
-//     choicesList.appendChild(liElement);
-    
-
-    
-//     // Create a button element 
-//     var buttonElement = document.createElement('button');
-    
-//     // Set the button text content to the current indexed answer
-//     buttonElement.textContent = currentQuestion.answers[i];
-                   
-//     // Sets the value of the button to be the same as the textContent of the button
-//     buttonElement.value = i; // Use the index as the value
-    
-//     // Add button element to list element
-//     liElement.appendChild(buttonElement);
-    
-//     buttonElement.addEventListener('click', checkClick); 
-// }
-
-// // Add newly created choices list to choices div
-
+     // Check if the selected answer is correct
+     if (selectedAnswer == correctAnswer) {
+        console.log('Correct!');
+        
+        // Handle correct answer logic here
+    } else {
+        console.log('Incorrect!');
+        // Handle incorrect answer logic here
+    }
+    navigate(1);
+}
 
 
 
@@ -95,8 +129,10 @@ function startQuiz(event) {
     // When start button is clicked #questions screen = show
     questionScreen.classList.remove('hide');
     
-    
+    displayQuestion(index);
+
 }
+
 
 
 startButton.addEventListener('click', startQuiz);
