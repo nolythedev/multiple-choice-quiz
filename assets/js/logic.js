@@ -16,6 +16,8 @@ var choices = document.querySelector('#choices');
 var feedback = document.querySelector('#feedback')
 var success = document.createElement('p');
 var failure = document.createElement('p');
+// Grabs the submit button
+var submitScoreBtn = document.querySelector('#submit');
 
 var index = 0;
 
@@ -139,7 +141,7 @@ function navigate(direction) {
         setTimeout(function () {
             questionScreen.className = 'hide';
             endScreen.classList.remove('hide');
-        }, 600);
+        }, 700);
 
         document.querySelector('#final-score').textContent = score;
 
@@ -150,6 +152,11 @@ function navigate(direction) {
     displayAnswers();
 }
 
+function submitScore(event) {
+    event.preventDefault();
+
+    alert('Scoreeee');
+}
 
 function startQuiz(event) {
     event.preventDefault();
@@ -167,6 +174,7 @@ function startQuiz(event) {
 }
 
 startButton.addEventListener('click', startQuiz);
+submitScoreBtn.addEventListener('click', submitScore);
 
 
 
