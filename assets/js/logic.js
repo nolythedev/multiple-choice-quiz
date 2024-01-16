@@ -13,8 +13,15 @@ var endScreen = document.querySelector('#end-screen');
 var questionTitle = document.querySelector('#question-title');
 // Grab choices div
 var choices = document.querySelector('#choices');
+var feedback = document.querySelector('#feedback')
+var success = document.createElement('p');
+var failure = document.createElement('p');
 
 var index = 0;
+
+var score = 0;
+
+
 
 // Function for timer
 function timer() {
@@ -46,51 +53,97 @@ function displayAnswers() {
     // Clear the existing choices
     choices.innerHTML = "";
 
-        // Create an ordered list element
-        var choicesList = document.createElement('ol');
+    // Create an ordered list element
+    var choicesList = document.createElement('ol');
 
-        // Loop through the answers array of the current question
-        for (var i = 0; i < questions[index].answers.length; i++) {
-            // Create an li element for each answer
-            var liElement = document.createElement('li');
+    // Loop through the answers array of the current question
+    for (var i = 0; i < questions[index].answers.length; i++) {
+        // Create an li element for each answer
+        var liElement = document.createElement('li');
 
         // Style the li element
         liElement.setAttribute('style', 'list-style-type: none;');
 
-            // Create a button element
-            var buttonElement = document.createElement('button');
+        // Create a button element
+        var buttonElement = document.createElement('button');
 
-            // Set the button text content to the current indexed answer
-            buttonElement.textContent = questions[index].answers[i];
+        // Set the button text content to the current indexed answer
+        buttonElement.textContent = questions[index].answers[i];
 
-            // Set the value of the button to be the same as the index of the answer
-            buttonElement.value = i;
+        // Set the value of the button to be the same as the index of the answer
+        buttonElement.value = i;
 
-             // Add an event listener to the button to check the answer when clicked
-             buttonElement.addEventListener('click', function(event) {
-                checkAnswer(event, index);
-            });
+        // Add an event listener to the button to check the answer when clicked
+        buttonElement.addEventListener('click', function (event) {
+            checkAnswer(event, index);
+        });
 
-            // Add button element to list element
-            liElement.appendChild(buttonElement);
+        // Add button element to list element
+        liElement.appendChild(buttonElement);
 
-            // Add li element to choices ol
-            choicesList.appendChild(liElement);
-        }
+        // Add li element to choices ol
+        choicesList.appendChild(liElement);
+    }
 
-        // Append the choicesList to the choices container
-        choices.appendChild(choicesList);
+    // Append the choicesList to the choices container
+    choices.appendChild(choicesList);
 }
 
-displayAnswers();
 
+function checkAnswer(event, index) {
+    event.preventDefault();
+
+    // Grabs the value of the selected answer
+    var selectedAnswer = event.target.value;
+    // Grabs the correct answer from the current question
+    var correctAnswer = questions[index].correctAnswer;
+
+    // Clear previous success/fail messages
+    feedback.innerHTML = '';
+
+    // Check if the selected answer is correct
+    if (selectedAnswer == correctAnswer) {
+        score++;
+
+        // Removes class, adds text content then appends new element
+        feedback.classList.remove('hide');
+        success.textContent = 'Correct';
+        feedback.append(success);
+
+        // Handle correct answer logic here
+    } else {
+        score - 1;
+
+        feedback.classList.remove('hide');
+        failure.textContent = 'Incorrect';
+        feedback.append(failure);
+
+        // Handle incorrect answer logic here
+    }
+
+    // Hide the success/fail message after a delay
+    setTimeout(function () {
+        feedback.classList.add('hide');
+    }, 500);
+
+    navigate(1);
+}
+
+// Navigate function inspired from image carousel task
 function navigate(direction) {
     index = index + direction;
-    if (index < 0) { 
-        index = questions.length - 1; 
-    } else if (index > questions.length - 1) { 
-        questionScreen.className = 'hide';
-        endScreen.classList.remove('hide');
+    if (index < 0) {
+        index = questions.length - 1;
+    } else if (index > questions.length - 1) {
+        // Delay last screen
+        setTimeout(function () {
+            questionScreen.className = 'hide';
+            endScreen.classList.remove('hide');
+        }, 600);
+
+        document.querySelector('#final-score').textContent = score;
+
+        return;
     }
 
     displayQuestion(index);
@@ -98,42 +151,20 @@ function navigate(direction) {
 }
 
 
-function checkAnswer(event, index) {
-    event.preventDefault();
-    
-    var selectedAnswer = event.target.value;
-    var correctAnswer = questions[index].correctAnswer;
-
-     // Check if the selected answer is correct
-     if (selectedAnswer == correctAnswer) {
-        console.log('Correct!');
-        
-        // Handle correct answer logic here
-    } else {
-        console.log('Incorrect!');
-        // Handle incorrect answer logic here
-    }
-    navigate(1);
-}
-
-
-
 function startQuiz(event) {
     event.preventDefault();
-    
+
     console.log('Start has been clicked and timer has started');
     timer();
-    
+
     // When start button is clicked start screen class is = to hide
     startScreen.className = 'start hide';
     // When start button is clicked #questions screen = show
     questionScreen.classList.remove('hide');
-    
+
     displayQuestion(index);
-
+    displayAnswers();
 }
-
-
 
 startButton.addEventListener('click', startQuiz);
 
