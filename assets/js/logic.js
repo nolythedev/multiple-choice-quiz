@@ -19,6 +19,10 @@ var failure = document.createElement('p');
 // Grabs the submit button
 var submitScoreBtn = document.querySelector('#submit');
 
+var initials = document.querySelector('#initials');
+
+var highScore = document.querySelector('#highscores');
+
 var index = 0;
 
 var score = 0;
@@ -26,9 +30,8 @@ var score = 0;
 
 
 // Function for timer
-function timer() {
-    var timeLeft = 60;
-
+function timer(timeLeft) {
+   
     // When start button is clicked timer starts 
     var timerInterval = setInterval(function () {
         timeLeft--;
@@ -64,10 +67,12 @@ function displayAnswers() {
         var liElement = document.createElement('li');
 
         // Style the li element
-        liElement.setAttribute('style', 'list-style-type: none;');
+        liElement.setAttribute('style', 'list-style-type: none; background: transparent;');
 
         // Create a button element
         var buttonElement = document.createElement('button');
+
+        buttonElement.setAttribute('style', 'min-width: 200px; text-align: left;');
 
         // Set the button text content to the current indexed answer
         buttonElement.textContent = questions[index].answers[i];
@@ -134,6 +139,14 @@ function checkAnswer(event, index) {
 // Navigate function inspired from image carousel task
 function navigate(direction) {
     index = index + direction;
+     // Check if timer has reached 0 and there are more questions
+     if (timer === 0 && index < questions.length) {
+        questionScreen.className = 'hide';
+        endScreen.classList.remove('hide');
+        document.querySelector('#final-score').textContent = score;
+        return;
+    }
+
     if (index < 0) {
         index = questions.length - 1;
     } else if (index > questions.length - 1) {
@@ -155,14 +168,18 @@ function navigate(direction) {
 function submitScore(event) {
     event.preventDefault();
 
-    alert('Scoreeee');
+    localStorage.setItem("Initials", initials.value);
+    localStorage.setItem("Score", score);
+   
+    initials.value = '';
+
 }
 
 function startQuiz(event) {
     event.preventDefault();
 
     console.log('Start has been clicked and timer has started');
-    timer();
+    timer(60);
 
     // When start button is clicked start screen class is = to hide
     startScreen.className = 'start hide';
